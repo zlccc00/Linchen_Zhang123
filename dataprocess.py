@@ -6,12 +6,12 @@ import numpy as np
 
 def Entropy(DataList):
     '''
-        计算随机变量的熵
+        Calculate the entropy of a random variable
     '''
-    counts = len(DataList)      # 总数量
-    counter = Counter(DataList) # 每个变量出现的次数
-    prob = {i[0]:i[1]/counts for i in counter.items()}      # 计算每个变量的 p*log(p)
-    H = - sum([i[1]*math.log2(i[1]) for i in prob.items()]) # 计算熵
+    counts = len(DataList)      # Total number
+    counter = Counter(DataList) # Number of occurrences of each variable
+    prob = {i[0]:i[1]/counts for i in counter.items()}      # Calculate p*log(p) for each variable
+    H = - sum([i[1]*math.log2(i[1]) for i in prob.items()]) # Calculate entropy
     return H 
 
 
@@ -20,14 +20,14 @@ def fun_dot(data):
     Headway_Distance = np.array([data['Headway_Distance1'],data['Headway_Distance2'],data['Headway_Distance3']])
     return np.dot(Orientation,Headway_Distance)
 
-##所需要的 特征参数 此处添加 Orientation_Headway的向量积作为特征输入
+##Required feature parameters ###Add the vector product of Orientation_Headway here as feature input
 
 params = ["Headway_Distance1abs","Headway_Distance2abs","Headway_Distance3abs",
         "Preceding_Vel1abs","Preceding_Vel2abs","Preceding_Vel3abs",
         "Orientation1abs","Orientation2abs","Orientation3abs",
         "RPM_diff","Orientation_Headway"] 
 
-# 窗口size设置为 60 
+# Window size set to 60 
 win_size = 60
 def get_train_xy(df):
     df1 = df.dropna()
@@ -45,7 +45,7 @@ def get_train_xy(df):
     df1 = df1.drop(columns=[' Orientation',' Position',' Velocity',' Headway_Distance',' Preceding_Vel'])
 
 
-    #数据类型转换
+    #Data type conversion
     df1['Orientation1'] = df1['Orientation1'].astype(float)
     df1['Orientation2'] = df1['Orientation2'].astype(float)
     df1['Orientation3'] = df1['Orientation3'].astype(float)
@@ -62,17 +62,17 @@ def get_train_xy(df):
     df1['Position2'] = df1['Position2'].astype(float)
     df1['Position3'] = df1['Position3'].astype(float)
 
-    #计算  Velocity 一阶差分
+    #Calculate Velocity's first-order difference
     param = 'Velocity'
     for i in range(3):
         df1[f"{param}{i+1}abs"] = df1[f"{param}{i+1}"].diff().abs()
 
-    #计算  Headway_Distance 一阶差分
+    #Calculate Headway_Distance's first-order difference
     param = 'Headway_Distance'
     for i in range(3):
         df1[f"{param}{i+1}abs"] = df1[f"{param}{i+1}"].diff().abs()
 
-    #计算  preceding中的 一阶差分
+    #Calculate  preceding's first-order difference
     param = 'Preceding_Vel'
     for i in range(3):
         df1[f"{param}{i+1}"] = df1[f"{param}{i+1}"].astype(float)
@@ -86,7 +86,7 @@ def get_train_xy(df):
 
     df1['RPM_diff'] = df1[' RPM'].diff().abs() 
     
-    #此处添加向量积 用于区分
+    #Add the cross product here ##Used to distinguish 
     
     df1['RPM_diff'] = df1[' RPM'].diff().abs() 
     
